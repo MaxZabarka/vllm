@@ -6,6 +6,7 @@ from vllm.logger import init_logger
 from vllm.utils import is_hip
 
 logger = init_logger(__name__)
+print("Running vLLM MaxZabakra fork v2")
 
 try:
     import ray
@@ -75,11 +76,16 @@ def initialize_cluster(
                 "serving.")
         # Connect to a ray cluster.
         if is_hip():
+            print("Initializing ray with num_cpus=32")
             ray.init(address=ray_address,
                      ignore_reinit_error=True,
-                     num_gpus=parallel_config.world_size)
+                     num_gpus=parallel_config.world_size,
+                     num_cpus=32
+                    
+                     )
         else:
-            ray.init(address=ray_address, ignore_reinit_error=True)
+            print("Initializing ray with num_cpus=32")
+            ray.init(address=ray_address, ignore_reinit_error=True, num_cpus=32)
 
     if not parallel_config.worker_use_ray:
         # Initialize cluster locally.
